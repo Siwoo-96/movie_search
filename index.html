@@ -254,6 +254,8 @@
       let target = event.target;
       
       if (target.textContent === '한국') {
+        BASE_LANG = 'ko';
+        BASE_REGION = 'KR';
         nation.textContent = '한국';
       } else if (target.textContent === '미국') {
         BASE_LANG = 'en';
