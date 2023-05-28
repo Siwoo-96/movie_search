@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+  <script type ="text/javascript" src="apikey.js"></script>
 
   <style>
     * {
@@ -282,7 +283,7 @@
 
     async function MovieData() {
       const URL = 'https://api.themoviedb.org/3';
-      const KEY = '52d537b416811d07bd31c6b1ae8d4d5a';
+      const KEY = config.apikey;
 
       let response = await fetch(`${URL}/movie/popular?api_key=${KEY}&language=${BASE_LANG}&region=${BASE_REGION}`, options)
 
