@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: rgb(17, 17, 17);
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      position: relative;
+    }
+
+    .title {
+      height: 150px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      color: white;
+      font-size: 50px;
+      background-color: rgb(17, 17, 17);
+    }
+
+    .search {
+      width: 100vw;
+      height: 100px;
+
+      display: flex;
+      justify-content: center;
+
+      border-bottom: 1px solid rgba(255, 255, 255, 0.527);
+
+      background-color: rgb(17, 17, 17);
+    }
+
+    #serch_ip {
+      width: 300px;
+      height: 50px;
+
+      margin: 20px;
+    }
+
+    .search input:focus {
+      caret-color: red;
+      border-color: rgb(139, 139, 139);
+      padding: 20px;
+      outline: none;
+    }
+
+    input::placeholder {
+      text-align: center;
+    }
+
+    #search_btn {
+      width: 100px;
+      height: 50px;
+
+      margin: 20px;
+    }
+
+    .movie_list {
+      width: 1350px;
+
+      display: flex;
+      flex-wrap: wrap;
+
+      position: relative;
+    }
+
+    .card {
+      width: 230px;
+      height: 320px;
+
+      margin: 20px;
+      padding: 20px;
+
+      color: rgb(199, 194, 194);
+      background-color: rgb(3, 3, 100);
+      border-radius: 10px;
+
+      user-select: none;
+
+    }
+
+    .card>img {
+      width: 100%;
+      border-radius: 10px;
+
+    }
+
+    .movie_info {
+      width: 700px;
+      height: 200px;
+
+      position: absolute;
+      display: inline-block;
+      left: 25%;
+
+      padding: 20px;
+      border-radius: 20px;
+
+      overflow-y: scroll;
+      overflow-x: hidden;
+
+      background-color: rgba(99, 102, 103, 0.9);
+    }
+
+    .movie_info::-webkit-scrollbar {
+      width: 10px;
+      border-left: 1px solid rgb(62, 61, 61);
+    }
+
+    .movie_info::-webkit-scrollbar-thumb {
+      background: gray;
+      background-clip: padding-box;
+      border: 3px solid transparent;
+      border-radius: 8px;
+    }
+
+    .movie_info::-webkit-scrollbar-track {
+      background: rgba(141, 143, 147, 0.1);
+    }
+
+    .info_title {
+      width: 650px;
+      height: 40px;
+
+      font-size: 20px;
+      border-bottom: 1px solid gray;
+    }
+
+    .info_rating {
+      width: 650px;
+      height: 30px;
+
+      display: flex;
+
+      font-size: 18px;
+      margin-top: 10px;
+    }
+
+    .star_box {
+      width: 100px;
+
+      font-size: 20px;
+      margin-left: 20px;
+    }
+
+    .star_box>.star {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .star_box>.star>.fill_star {
+      overflow: hidden;
+      color: yellow;
+    }
+
+    .star_box>.star>.none_star {
+      position: absolute;
+    }
+
+    .info_contents {
+      width: 650px;
+      height: 180px;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="title">Movie Serch</div>
+  <div class="search">
+    <input type="text" id="serch_ip" placeholder="영화 제목을 검색하세요." />
+    <button type="button" id="search_btn">search</button>
+  </div>
+  <div class="movie_list"></div>
+
+  <script>
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1MmQ1MzdiNDE2ODExZDA3YmQzMWM2YjFhZThkNGQ1YSIsInN1YiI6IjY0NzA4NzYzNzcwNzAwMDBkZjEzZGQzMiIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.kaKYi8QnNzM1I8W4whNdpLVeS6F46sMq6CNcHA0wfJ0'
+      }
+    };
+
+    async function MovieData() {
+      let response = await fetch("https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1", options)
+      let data = await response.json();
+      return data['results'];
+    }
+
+    let movie_list = document.querySelector(".movie_list");
+
+    async function creatBox() {
+      const movies = await MovieData();
+      let data = [];
+
+      movies.forEach((movie, index) => {
+        let temp = `<div class="card ${index}" id=${movie.id}>
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+      <div class="movie_info hidden ${index}">
+        <div class="info_title">Title > ${movie.title}</div>
+        <div class="info_rating">Rating > ${movie.vote_average}
+          <div class="star_box">
+            <div class="star">
+              <div class="fill_star" style="width: ${movie.vote_average / 10 * 100}%;">★★★★★</div>
+              <div class="none_star">☆☆☆☆☆</div>
+            </div>
+          </div>
+        </div>
+        <div class="info_contents">${movie.overview}</div>
+      </div>
+    </div>`
+        console.log(temp)
+        data.push(temp);
+      })
+
+      movie_list.innerHTML = data.join("");
+    }
+
+    creatBox()
+
+
+    let hid = null;
+
+    movie_list.addEventListener("click", (event) => {
+      let target = event.target;
+
+      if (!target.className.includes('card')) {
+        target = target.parentNode;
+      }
+
+      let idx = target.className.split(' ')[1];
+
+      if (hid === null) {
+        target.childNodes[3].classList.remove('hidden')
+        hid = target.childNodes[3];
+      } else {
+        hid.classList.add('hidden');
+        target.childNodes[3].classList.remove('hidden')
+        hid = target.childNodes[3];
+      }
+
+      if (target.id !== '') {
+        alert(`id: ${target.id}`);
+      }
+    })
+
+    const search_btn = document.querySelector("#search_btn");
+    const serch_ip = document.querySelector("#serch_ip");
+
+    function sorting(mes) {
+      const movieCards = document.querySelectorAll(".card");
+
+      movieCards.forEach((card) => {
+        const title = card.querySelector("div").childNodes[1]['innerText'].toLowerCase();
+        for (let i = 0; i < title.length; i++) {
+          if (title.includes(`${mes}`)) {
+            card.style.display = "flex";
+          } else {
+            card.style.display = "none";
+          }
+        }
+      });
+    }
+
+    search_btn.addEventListener('click', (event) => {
+      let mes = document.getElementById("serch_ip").value.toLowerCase();
+      sorting(mes);
+    })
+
+    document.addEventListener('keyup', function (event) {
+      let target = event.key;
+      let mes = document.getElementById("serch_ip").value.toLowerCase();
+
+      sorting(mes);
+    })
+  </script>
+</body>
+
+</html>
