@@ -1,0 +1,14 @@
+name: Update Directory Structure
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: APIKEY
+        env:
+          APIKEY: ${{ secrets.APIKEY }}
+        run: |
+          echo $APIKEY
