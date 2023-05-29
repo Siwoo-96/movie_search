@@ -344,8 +344,11 @@
         hid = target.childNodes[3];
       }
 
+      const name = target.childNodes[3].childNodes[1].textContent;
+      const movie_name = name.split('Title > ')[1];
+
       if (target.id !== '') {
-        alert(`id: ${target.id}`);
+        alert(`영화 : ${movie_name} \n ID : ${target.id}`);
       }
     })
 
